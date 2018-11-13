@@ -1,0 +1,13 @@
+[Unit]
+Description=Consul-Templates for the Sensu-Agenst
+Documentation=https://github.com/hashicorp/consul-template
+
+[Service]
+ExecStart=/usr/local/bin/consul-template -config "/etc/sensu/agent.hcl"
+Restart=always
+StartLimitIntervalSec=0
+RestartSec=3
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

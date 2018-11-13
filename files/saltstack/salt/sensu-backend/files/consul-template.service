@@ -1,0 +1,12 @@
+[Unit]
+Description=Consul-Templates
+Documentation=https://github.com/hashicorp/consul-template
+
+[Service]
+ExecStart=/usr/local/bin/consul-template -config "/var/sensu/sensu-config/ctmplconfig.hcl"
+Restart=always
+StartLimitIntervalSec=0
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

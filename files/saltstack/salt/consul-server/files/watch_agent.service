@@ -1,0 +1,12 @@
+[Unit]
+Description=Watch Check
+Documentation=https://www.consul.io/
+
+[Service]
+ExecStart=/usr/local/bin/consul watch -type=event -name=agent python /tmp/agent.py 
+
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

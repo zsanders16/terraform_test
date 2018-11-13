@@ -1,0 +1,11 @@
+[Unit]
+Description=Consul
+Documentation=https://www.consul.io/
+
+[Service]
+ExecStart=/etc/systemd/consul/consul_server_start.sh 
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
