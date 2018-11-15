@@ -1,8 +1,13 @@
-#################################################################
+###############################################################
 # Produces:
+#   - scale set
 #   - Network Security Group
 #   - Adds multiple security rules to the given security group
-#################################################################
+###############################################################
+
+# ---------------------------------------------------------------------------------------------------------------------
+# NSG
+# ---------------------------------------------------------------------------------------------------------------------
 
 resource "azurerm_network_security_group" "consul" {
   name = "consul_servers"
@@ -166,4 +171,71 @@ resource "azurerm_network_security_rule" "denyall" {
   resource_group_name = "${var.resource_group_name}"
   source_address_prefix = "*"
   source_port_range = "*"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Scale Set
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "azurerm_virtual_machine_scale_set" "consul" {
+  name                = "consul_scale_set"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group_name}"
+
+  upgrade_policy_mode  = "Automatic"
+
+  sku {
+    name     = "Standard_F2s_v2"
+    tier     = "Standard"
+    capacity = "${var.count}"
+  }
+
+  storage_profile_image_reference {
+    id = "${var.image_id}"
+  }
+
+  storage_profile_os_disk {
+    name              = ""
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  storage_profile_data_disk {
+    lun           = 0
+    caching       = "ReadWrite"
+    create_option = "Empty"
+    disk_size_gb  = 10
+  }
+
+  os_profile {
+    computer_name_prefix = "consulvm"
+    admin_username       = "consuladmin"
+    admin_password       = "Password1234!"
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+
+    // ssh_keys {
+    //   path     = "/home/myadmin/.ssh/authorized_keys"
+    //   key_data = "${file("~/.ssh/demo_key.pub")}"
+    // }
+  }
+
+  network_profile {
+    name    = "consulnetworkprofile"
+    primary = true
+    network_security_group_id = "${azurerm_network_security_group.consul.id}"
+
+    ip_configuration {
+      name      = "consul_ip_config"
+      primary   = true
+      subnet_id = "${var.subnet_id}"
+    }
+  }
+
+  tags {
+    environment = "admin"
+  }
 }

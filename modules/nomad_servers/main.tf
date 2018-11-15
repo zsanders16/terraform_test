@@ -7,15 +7,16 @@ resource "azurerm_network_interface" "nomad_server" {
     ip_configuration {
         name                          = "nomad_server_config"
         subnet_id                     = "${var.subnet_id}"
-        private_ip_address_allocation = "dynamic"
+        private_ip_address_allocation = "static"
+        private_ip_address            = "10.0.1.1${count.index}"
     }
 }
 
 resource "azurerm_virtual_machine" "main" {
     count                 = "${var.count}"
     name                  = "nomad_server${count.index}"
-    location              = "${azurerm_resource_group.main.location}"
-    resource_group_name   = "${azurerm_resource_group.main.name}"
+    location              = "${var.location}"
+    resource_group_name   = "${var.resource_group_name}"
     network_interface_ids = ["${element(azurerm_network_interface.nomad_server.*.id)}"]
     vm_size               = "Standard_DS1_v2"
 
@@ -38,7 +39,7 @@ resource "azurerm_virtual_machine" "main" {
 
     os_profile {
         computer_name  = "nomad_server${count.index}"
-        admin_username = "testadmin"
+        admin_username = "nomadadmin"
         admin_password = "Password1234!"
     }
 
@@ -53,9 +54,9 @@ resource "azurerm_virtual_machine" "main" {
         bastion_password  = "${var.jumpbox_password}"
 
         type      = "ssh"
-        user      = "${var.saltmaster_username}"
-        password  = "${var.salt_password}"
-        host      = "${var.salt_ip_address}"
+        user      = "nomadadmin"
+        password  = "Password1234!"
+        host      = "${element(azurerm_network_interface.nomad_server.*.id)}"
     }
 
     provisioner "remote-exec" {

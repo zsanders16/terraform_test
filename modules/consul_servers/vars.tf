@@ -1,42 +1,60 @@
-############################################
-#              MODULE INPUT
+######################################
+#             MODULE INPUT
 #
-#               Required
+#               REQUIRED
+#
+# location = ""
 # resource_group_name = ""
-# allowed_inbound_cidr_blocks = ""
+# subnet_id = ""
+# count = ""
+# image_id = ""
 #
-#               Optional
+#               OPTIONAL
+#
+# allowed_inbound_cidr_blocks = ""
 # server_rpc_port = ""
 # cli_rpc_port = ""
 # serf_lan_port = ""
 # serf_wan_port = ""
 # http_api_port = ""
 # dns_port = ""
-###########################################
-
+######################################
 
 # ---------------------------------------------------------------------------------------------------------------------
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
 
-variable "security_group_name" {
-  description = "The name of the security group to which we should add the Consul security group rules"
+variable "location" {
+  description = "The location that the resources will run in (e.g. East US)"
 }
 
 variable "resource_group_name" {
-  description = "The name of the resource group that the security group belongs to"
+  description = "The name of the resource group that the resources for consul will run in"
 }
 
-variable "allowed_inbound_cidr_blocks" {
-  description = "A list of CIDR-formatted IP address ranges from which the Azure Instances will allow connections to Consul"
-  type        = "list"
+variable "subnet_id" {
+  description = "The id of the subnet to deploy the cluster into"
+}
+
+variable "count" {
+  description = "Number of servers in the Scale Set"
+}
+
+variable "image_id" {
+  description = "The URI to the Azure image that should be deployed to the consul cluster."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
+
+variable "allowed_inbound_cidr_blocks" {
+  description = "A list of CIDR-formatted IP address ranges from which the Azure Instances will allow connections to Consul"
+  type        = "list"
+  default = ["10.0.1.0/24"]
+}
 
 variable "server_rpc_port" {
   description = "The port used by servers to handle incoming requests from other agents."

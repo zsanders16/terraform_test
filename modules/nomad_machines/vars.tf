@@ -5,6 +5,9 @@
 # location = ""
 # resource_group_name = ""
 # subnet_id = ""
+# jumpbox_ip_address = ""
+# jumpbox_username = ""
+# jumpbox_password = ""
 #
 #             OPTIONAL
 # jumpbox_username = ""

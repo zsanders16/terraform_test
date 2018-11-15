@@ -1,0 +1,83 @@
+{
+    "min_packer_version": "0.12.0",
+    "variables": {
+      "subscription_id": "{{env `ARM_SUBSCRIPTION_ID`}}",
+      "tenant_id": "{{env `ARM_TENANT_ID`}}",
+      "client_id": "{{env `ARM_CLIENT_ID`}}",
+      "client_secret": "{{env `ARM_CLIENT_SECRET`}}",
+      "azure_location": "westus2",
+      "resource_group_name": "main_rg",
+      "build_resource_group_name": "main_rg",
+      "salt-minion_suffix": "insights.consul.dev",
+      "_0_WTWRegion": "NALA",
+      "_1_BusinessUnit": "BDAIM",
+      "_2_PointOfContact": "jason.anderson@willistowerswatson.com",
+      "_3_BillingCode": "None",
+      "_4_ApplicationID": "None",
+      "_5_Environment": "Dev",
+      "_6_ProjectName": "None"
+    },
+    "builders": [
+      {
+        "type": "azure-arm",
+        "subscription_id": "{{user `subscription_id`}}",
+        "tenant_id": "{{user `tenant_id`}}",
+        "client_id": "{{user `client_id`}}",
+        "client_secret": "{{user `client_secret`}}",
+        "managed_image_name": "salt-minion-ubuntu-{{isotime \"2006-01-02-150405\"}}",
+        "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+        "build_resource_group_name": "{{user `build_resource_group_name`}}",
+        "os_type": "Linux",
+        "image_publisher": "Canonical",
+        "image_offer": "UbuntuServer",
+        "image_sku": "18.04-LTS",
+        "vm_size": "Standard_DS2_v2",
+        "azure_tags": {
+          "_0_WTWRegion": "{{user `_0_WTWRegion`}}",
+          "_1_BusinessUnit": "{{user `_1_BusinessUnit`}}",
+          "_2_PointOfContact": "{{user `_2_PointOfContact`}}",
+          "_3_BillingCode": "{{user `_3_BillingCode`}}",
+          "_4_ApplicationID": "{{user `_4_ApplicationID`}}",
+          "_5_Environment": "{{user `_5_Environment`}}",
+          "_6_ProjectName": "{{user `_6_ProjectName`}}"
+        }
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "file",
+        "source": "{{template_dir}}/../files",
+        "destination": "/tmp"
+      },
+      {
+        "type": "shell",
+        "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+        "inline": [
+          "AZ_REPO=$(lsb_release -cs)",
+          "echo \"deb https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main\" | sudo tee /etc/apt/sources.list.d/azure-cli.list",
+          "curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -",
+          "wget -O - https://repo.saltstack.com/apt/ubuntu/18.04/amd64/2017.7/SALTSTACK-GPG-KEY.pub | sudo apt-key add -",
+          "echo \"deb http://repo.saltstack.com/apt/ubuntu/18.04/amd64/2017.7 bionic main\" | sudo tee /etc/apt/sources.list.d/saltstack.list",
+          "apt-get update && apt-get install -y libssl-dev libffi-dev python-dev build-essential apt-transport-https azure-cli salt-minion salt-ssh salt-syndic salt-api",
+          "DEBIAN_FRONTEND=noninteractive apt-get -y upgrade",
+          "echo \"-------Finding where salt is-------\"",
+          "find / -type d -name salt",
+          "echo \"-----------------------------------\"",
+          "sudo mv /tmp/files/scripts/salt-minion/minion.conf /etc/salt/minion.d/minion.conf",
+          "echo \"-------Finding salt config-------\"",
+          "export PATH_TO_MINION_CONF=\"$(find / -type f -name minion.conf -print -quit)\"",
+          "echo \"$PATH_TO_MINION_CONF\"",
+          "echo \"---------------------------------\"",
+          "echo \"-------Minion Config Contents-------\"",
+          "if [-f \"$PATH_TO_MINION_CONF\"]; then cat \"$PATH_TO_MINION_CONF\"; else echo \"Minion.conf not found.\"; fi",
+          "echo \"-----------------------------------\"",
+          "minion_id=\"$(hostname -s).{{user `minion_id_suffix`}}\"",
+          "echo $minion_id | sudo tee /etc/salt/minion_id > /dev/null",
+          "sudo systemctl restart salt-minion",
+          "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+        ],
+        "inline_shebang": "/bin/sh -x",
+        "pause_before": "30s"
+      }
+    ]
+  }
