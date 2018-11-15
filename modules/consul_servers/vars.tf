@@ -8,6 +8,7 @@
 # subnet_id = ""
 # count = ""
 # image_id = ""
+# custom_extension = ""
 #
 #               OPTIONAL
 #
@@ -45,6 +46,15 @@ variable "image_id" {
   description = "The URI to the Azure image that should be deployed to the consul cluster."
 }
 
+variable "custom_extension" {
+  description = "extensions to run after build"
+  type = "map"
+}
+
+variable "salt_ip" {
+  description = "not used"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -55,7 +65,7 @@ variable "allowed_inbound_cidr_blocks" {
   type        = "list"
   default = ["10.0.1.0/24"]
 }
-
+ 
 variable "server_rpc_port" {
   description = "The port used by servers to handle incoming requests from other agents."
   default     = 8300

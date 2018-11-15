@@ -1,5 +1,3 @@
-
-
 {
   "bootstrap_expect": 3,
   "client_addr": "0.0.0.0",
@@ -17,10 +15,5 @@
   "log_level": "INFO",
   "rejoin_after_leave": true,
   "server": true,
-  "start_join": [
-      "172.20.20.31",
-      "172.20.20.32",
-      "172.20.20.33"
-  ],
   "ui": true
 }

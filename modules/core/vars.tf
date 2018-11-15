@@ -31,3 +31,8 @@ variable "admin_subnet" {
   description = "admin subnet"
   default     = "10.0.1.0/24"
 }
+
+variable "consul_subnet" {
+  description = "consul subnet"
+  default     = "10.0.2.0/24"
+}

@@ -1,4 +1,4 @@
-{% set CONSUL_VERSION = "1.4.0-rc1" %}
+{% set CONSUL_VERSION = "1.4.0" %}
 
 consul_binary_download:
   cmd.run:

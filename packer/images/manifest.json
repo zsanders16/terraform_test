@@ -1,0 +1,13 @@
+{
+  "builds": [
+    {
+      "name": "azure-arm",
+      "builder_type": "azure-arm",
+      "build_time": 1542312489,
+      "files": null,
+      "artifact_id": "/subscriptions/b426c9f4-4082-40fc-91d2-37dfdc74d089/resourceGroups/main_rg/providers/Microsoft.Compute/images/salt-minion-ubuntu-2018-11-15-195726",
+      "packer_run_uuid": "8788c8dc-e3d7-7867-0cec-17f2a71181cd"
+    }
+  ],
+  "last_run_uuid": "8788c8dc-e3d7-7867-0cec-17f2a71181cd"
+}

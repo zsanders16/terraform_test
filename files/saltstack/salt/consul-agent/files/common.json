@@ -1,10 +1,11 @@
 {
   "retry_join": [
-    "172.20.20.31"
+    "10.0.1.6"
   ],
   "disable_remote_exec": false,
   "enable_script_checks": true,
   "data_dir": "/tmp/consul",
   "client_addr": "0.0.0.0",
-  "datacenter": "monitordc"
+  "datacenter": "monitordc",
+  "encrypt": "I+gEqXRdWOgRxjW/xL0OBw=="
 }

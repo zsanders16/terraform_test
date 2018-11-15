@@ -159,23 +159,11 @@ resource "azurerm_network_security_rule" "allow_dns_udp_inbound" {
   source_port_range = "1024-65535"
 }
 
-resource "azurerm_network_security_rule" "denyall" {
-  access = "Deny"
-  destination_address_prefix = "*"
-  destination_port_range = "*"
-  direction = "Inbound"
-  name = "DenyAll"
-  network_security_group_name = "${azurerm_network_security_group.consul.name}"
-  priority = 999
-  protocol = "*"
-  resource_group_name = "${var.resource_group_name}"
-  source_address_prefix = "*"
-  source_port_range = "*"
-}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Scale Set
 # ---------------------------------------------------------------------------------------------------------------------
+
 
 resource "azurerm_virtual_machine_scale_set" "consul" {
   name                = "consul_scale_set"
@@ -234,6 +222,8 @@ resource "azurerm_virtual_machine_scale_set" "consul" {
       subnet_id = "${var.subnet_id}"
     }
   }
+
+  extension = "${list(var.custom_extension)}"
 
   tags {
     environment = "admin"
