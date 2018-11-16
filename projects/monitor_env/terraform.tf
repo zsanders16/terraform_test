@@ -27,10 +27,9 @@ module "consul_servers" {
 
     location = "${var.location}"
     resource_group_name = "${var.resource_group_name}"
-    subnet_id = "${var.admin_subnet_id}"
+    subnet_id = "${var.consul_subnet_id}"
     count = "3"
     image_id = "${var.image_id}"
-    salt_ip = "${module.salt_master.salt_ip}"
     custom_extension          = {
         name                    = "customScript"
         publisher               = "Microsoft.Azure.Extensions"
@@ -38,7 +37,7 @@ module "consul_servers" {
         type_handler_version    = "2.0"
         settings                = <<SETTINGS
             {
-            "commandToExecute": "echo \"$(hostname -s).insights.consul.dev\" | sudo tee /etc/salt/minion_id > /dev/null"
+            "commandToExecute": "echo \"$(hostname -s).insights.consul.dev\" | sudo tee /etc/salt/minion_id > /dev/null && sudo systemctl restart salt-minion" 
             }
         SETTINGS
     }

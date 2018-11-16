@@ -14,6 +14,6 @@ variable "admin_subnet_id" {
     description = "id of the admin subnet in which you will be building"
 }
 
-// variable "consul_subnet_id" {
-//     description = "id of the consul subnet in which you will be building"
-// }
+variable "consul_subnet_id" {
+    description = "id of the consul subnet in which you will be building"
+}

@@ -59,7 +59,7 @@
         "curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -",
         "wget -O - https://repo.saltstack.com/apt/ubuntu/18.04/amd64/2017.7/SALTSTACK-GPG-KEY.pub | sudo apt-key add -",
         "echo \"deb http://repo.saltstack.com/apt/ubuntu/18.04/amd64/2017.7 bionic main\" | sudo tee /etc/apt/sources.list.d/saltstack.list",
-        "apt-get update && apt-get install -y libssl-dev libffi-dev python-dev build-essential apt-transport-https azure-cli salt-minion",
+        "apt-get update && apt-get install -y libssl-dev libffi-dev python-dev build-essential apt-transport-https azure-cli salt-minion dnsmasq",
         "DEBIAN_FRONTEND=noninteractive apt-get -y upgrade",
 
         "echo \"-------Finding where salt is-------\"",
